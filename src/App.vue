@@ -20,6 +20,12 @@
       <!-- RESULT -->
       <ResultScreen v-else-if="store.phase === 'result'" key="result" />
     </transition>
+
+    <!-- La mascotte flotte par dessus et persiste pendant les transitions -->
+    <Mascot 
+      v-if="store.phase !== 'result'" 
+      :message="store.mascotMessage" 
+    />
   </div>
 </template>
 
@@ -28,6 +34,7 @@ import { useQuizStore } from './stores/quiz';
 import VulnerabilityBar from './components/VulnerabilityBar.vue';
 import QuestionCard from './components/QuestionCard.vue';
 import ResultScreen from './components/ResultScreen.vue';
+import Mascot from './components/Mascot.vue';
 
 const store = useQuizStore();
 </script>

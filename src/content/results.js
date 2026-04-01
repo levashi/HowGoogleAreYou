@@ -1,8 +1,15 @@
-export const templates = {
+/**
+ * TEXTES DES RÉSULTATS
+ * --------------------
+ * Ces textes utilisent un système de templating (géré dans src/utils/scoring.js).
+ * Variables injectables : {{email_provider}}, {{years_on_platform}}, etc.
+ * Blocs conditionnels : {{#if has_local_backup}} Texte... {{/if}}
+ */
+
+export const results = {
   resilient: `Tu as une stratégie saine.
   
-Si ton fournisseur principal disparaît demain, ce sera un mauvais moment à passer, mais ta vie numérique n'est pas en danger. 
-Tu as évité le piège du "tout-en-un" magique.
+Si ton fournisseur principal disparaît demain, ce sera un mauvais moment à passer, mais ta vie numérique n'est pas en danger. Tu as évité le piège du "tout-en-un" magique.
 
 {{#if has_local_backup}}
 Surtout, ta copie locale te protège de l'effacement arbitraire. Bravo pour ça.
@@ -10,8 +17,7 @@ Surtout, ta copie locale te protège de l'effacement arbitraire. Bravo pour ça.
 
   fragile: `Tu as mis pas mal d'oeufs dans le même panier.
 
-Ton compte {{email_provider}} n'est pas qu'une boîte mail, c'est ta clé passe-partout. 
-Un algorithme te bloque demain, et tu seras surpris de voir à quelle vitesse les murs se referment.
+Ton compte {{email_provider}} n'est pas qu'une boîte mail, c'est ta clé passe-partout. Un algorithme te bloque demain, et tu seras surpris de voir à quelle vitesse les murs se referment.
 
 {{#if sso_level}}
 Ces applications où tu te connectes en un clic ? Elles te fermeront leurs portes en même temps.
@@ -47,4 +53,4 @@ Tout ce qui est sur {{storage_services}} disparaît.
 {{/if}}
 
 Ce n'est pas "si" ça arrive, c'est "quand". Tu n'es pas le client de ces plateformes, tu es un locataire précaire sans contrat de bail. Commence à exporter tes données dès aujourd'hui.`
-}
+};

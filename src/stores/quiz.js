@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { questions } from '../data/questions.mock';
-import { templates } from '../scripts/templates';
+import { questions } from '../content/questions';
+import { results } from '../content/results';
 import { renderTemplate } from '../utils/scoring';
 
 export const useQuizStore = defineStore('quiz', {
@@ -8,20 +8,19 @@ export const useQuizStore = defineStore('quiz', {
     phase: 'intro', // 'intro', 'quiz', 'result'
     currentQuestionId: null,
     answers: {},
-    history: [], // Pile des ID de questions pour le retour
+    history: [],
+    mascotMessage: "Salut ! Je suis AuditBot. Je suis là pour évaluer tes risques.",
   }),
 
   getters: {
     currentQuestion: (state) => questions.find(q => q.id === state.currentQuestionId),
     
-    // Recalcule tout dynamiquement pour s'assurer que l'état est parfait (surtout lors des retours en arrière)
     stateComputation: (state) => {
       let scoreRaw = 0;
       let scoreMax = 0;
       let profileVars = {};
       let dimensions = { email: 0, storage: 0, identity: 0, domain: 0, recovery: 0 };
       
-      // On rejoue l'historique pour calculer le score exact
       for (const qId of state.history) {
         const q = questions.find(q => q.id === qId);
         const answer = state.answers[qId];
@@ -29,7 +28,7 @@ export const useQuizStore = defineStore('quiz', {
         if (q && answer !== undefined) {
           const delta = q.score(answer);
           scoreRaw += delta * q.weight;
-          scoreMax += 10 * q.weight; // Max théorique est 10 * poids
+          scoreMax += 10 * q.weight;
           
           if (q.theme && dimensions[q.theme] !== undefined) {
             dimensions[q.theme] += delta * q.weight;
@@ -41,7 +40,6 @@ export const useQuizStore = defineStore('quiz', {
         }
       }
 
-      // Normalisation 0-100
       let scoreNormalized = scoreMax === 0 ? 0 : Math.round(Math.max(0, Math.min(100, (scoreRaw / scoreMax) * 100)));
 
       let profile = 'resilient';
@@ -58,7 +56,7 @@ export const useQuizStore = defineStore('quiz', {
     profileVars() { return this.stateComputation.profileVars },
 
     renderedScript() {
-      const template = templates[this.profile];
+      const template = results[this.profile];
       return renderTemplate(template, this.profileVars);
     }
   },
@@ -69,6 +67,7 @@ export const useQuizStore = defineStore('quiz', {
       this.currentQuestionId = questions[0].id;
       this.answers = {};
       this.history = [];
+      this.mascotMessage = "C'est parti ! Commence par m'en dire plus sur tes emails.";
     },
 
     answerQuestion(answer) {
@@ -76,23 +75,31 @@ export const useQuizStore = defineStore('quiz', {
       this.answers[q.id] = answer;
       this.history.push(q.id);
 
+      // On déclenche la réaction de la mascotte par rapport au choix effectué
+      if (q.mascotReaction) {
+        this.mascotMessage = q.mascotReaction(answer);
+      }
+
       const nextId = q.next(answer);
       if (nextId) {
         this.currentQuestionId = nextId;
       } else {
         this.phase = 'result';
+        // Petit message de la mascotte avant qu'elle n'affiche le résultat sur l'écran
+        this.mascotMessage = "C'est bon, j'ai fini mes calculs ! Regarde ton résultat.";
       }
     },
 
     goBack() {
       if (this.history.length === 0) {
         this.phase = 'intro';
+        this.mascotMessage = "On recommence ?";
         return;
       }
-      // On dépile la dernière question
       const prevId = this.history.pop();
       delete this.answers[prevId];
       this.currentQuestionId = prevId;
+      this.mascotMessage = "Pas de souci, on corrige ça !";
     },
 
     reset() {
@@ -100,6 +107,7 @@ export const useQuizStore = defineStore('quiz', {
       this.currentQuestionId = null;
       this.answers = {};
       this.history = [];
+      this.mascotMessage = "Prêt à refaire l'audit ?";
     }
   }
 });
