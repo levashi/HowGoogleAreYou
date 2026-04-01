@@ -49,15 +49,25 @@ const getComponentForType = (type) => {
   max-width: 800px; margin: 0 auto; min-height: 100vh;
   display: flex; flex-direction: column; justify-content: center; padding: 40px 20px;
 }
-.back-btn { 
-  position: absolute; top: 60px; left: -300px; background: none; border: none; 
-  color: rgba(255,255,255,0.5); cursor: pointer; font-size: 1rem;
+.back-btn {
+  position: fixed; 
+  top: 80px;
+  left: 80px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  z-index: 1000;
 }
+
 .back-btn:hover { color: white; }
-.back-icon {
-  width: 30px;
-  height: 30px;
+.back-icon { width: 30px; height: 30px; }
+
+@media (max-width: 600px) {
+  .back-btn { top: 15px; left: 15px; }
+  .back-icon { width: 24px; height: 24px; }
 }
+
 .question-text { font-size: 2rem; font-weight: 600; line-height: 1.3; margin-bottom: 40px; color: white; }
 .input-area { width: 100%; max-width: 600px; }
 </style>
