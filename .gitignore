@@ -1,2 +1,5 @@
 node_modules/
 PROJECT.md
+dist
+package-lock.json
+CONCEPT.md

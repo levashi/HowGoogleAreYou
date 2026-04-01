@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
 import { questions } from '../content/questions';
-import { results } from '../content/results';
+import { scenarioBlocks } from '../content/results';
 import { advices } from '../content/advices';
-import { renderTemplate } from '../utils/scoring';
 
 // Helper pour calculer la profondeur maximale restante de l'arbre
 function getMaxDepth(qId, visited = new Set()) {
@@ -88,16 +87,30 @@ export const useQuizStore = defineStore('quiz', {
       profileVars.no_local_backup = profileVars.has_local_backup === 'Non';
       profileVars.is_pro_finance = profileVars.pro_finance === 'Oui';
 
-      return { scoreNormalized, profileVars, profile };
+      let rupturePointsCount = 0;
+      if (profileVars.is_google_email || profileVars.is_apple_email) rupturePointsCount++;
+      if (profileVars.bad_pw) rupturePointsCount++;
+      if (profileVars.bad_2fa) rupturePointsCount++;
+      if (profileVars.is_sso_addict) rupturePointsCount++;
+      if (profileVars.no_local_backup) rupturePointsCount++;
+      if (profileVars.is_pro_finance) rupturePointsCount++;
+
+      profileVars.rupturePointsCount = rupturePointsCount;
+
+      return { scoreNormalized, profileVars, profile, rupturePointsCount };
     },
 
     scoreNormalized() { return this.stateComputation.scoreNormalized },
     profile() { return this.stateComputation.profile },
     profileVars() { return this.stateComputation.profileVars },
+    rupturePointsCount() { return this.stateComputation.rupturePointsCount },
 
-    renderedScript() {
-      const template = results[this.profile];
-      return renderTemplate(template, this.profileVars);
+    activeScenarioBlocks() {
+      const vars = this.profileVars;
+      return scenarioBlocks.filter(block => block.condition(vars)).map(block => ({
+        time: block.time,
+        text: typeof block.text === 'function' ? block.text(vars) : block.text
+      }));
     },
 
     actionableAdvices() {

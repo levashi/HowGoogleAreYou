@@ -1,70 +1,55 @@
-export const results = {
-  resilient: `Tu es un survivant numérique.
-
-Félicitations. Tu as compris que la gratuité se payait en contrôle. En ayant compartimenté tes accès et en évitant le piège du "tout-en-un" magique, tu as repris la souveraineté sur ton identité.
-
-Même si un géant du net décide de bannir tes comptes de manière automatisée demain matin, tu survivras sans dommage majeur. 
-{{#unless bad_pw}}Tes accès sont gérés de manière autonome,{{/unless}} et ton hygiène numérique est un exemple rare.
-
-Continue d'appliquer cette discipline militaire et de sensibiliser ton entourage. Le monde numérique a besoin de gens comme toi pour prouver qu'il existe une alternative.`,
-
-  fragile: `Tu as commencé à diversifier, mais des maillons vitaux restent exposés.
-
-Tu as conscience du problème, pourtant certaines habitudes te mettent en danger. Le jour où un algorithme décide par erreur que ton compte viole les conditions d'utilisation, tu seras temporairement paralysé.
-
-{{#if is_pro_finance}}
-Le point le plus inquiétant, c'est que tes finances y sont liées. Une erreur d'une IA, et c'est potentiellement tes accès bancaires qui sautent sans préavis.
-{{/if}}
-
-{{#if bad_pw}}
-Le fait de laisser ton navigateur ou ton écosystème gérer tes mots de passe est un piège. Un blocage t'empêcherait d'accéder à l'intégralité de tes autres sites web.
-{{/if}}
-
-{{#if no_local_backup}}
-De plus, sans sauvegarde locale, tes données ne t'appartiennent pas vraiment. Elles sont juste en location. Une panne sévère ou un blocage et tes souvenirs disparaissent.
-{{/if}}
-
-Il est grand temps de couper les derniers cordons qui te lient au monopole du cloud.`,
-
-  exposed: `Tu es à un clic au-dessus du vide.
-
-Tu dépends massivement d'un écosystème fermé. La concentration de tes services crée un goulot d'étranglement extrêmement dangereux.
-
-Si ton compte principal est suspendu par un processus algorithmique automatisé (ce qui arrive tous les jours à des utilisateurs honnêtes, sans intervention humaine) :
-- Tu perds immédiatement l'accès à ta boîte de réception.
-{{#if bad_pw}}
-- Tes mots de passe, enfermés dans le navigateur, s'évaporent instantanément. Tu ne pourras même plus te connecter ailleurs pour changer ton email.
-{{/if}}
-{{#if has_critical_data}}
-- Tes données privées ({{critical_services}}) sont scellées et rendues inaccessibles d'une seconde à l'autre.
-{{/if}}
-
-{{#if no_local_backup}}
-Puisque tu n'as pas pris la peine de faire une copie physique, tout ton patrimoine numérique est littéralement pris en otage par une multinationale.
-{{/if}}
-
-Il suffirait d'un piratage de ton email ou d'un faux signalement robotisé pour te rayer de la carte numérique. Réagis.`,
-
-  critical: `Tu es à la merci d'un algorithme. C'est l'alerte maximale.
-
-Ton adresse {{primary_email}} n'est pas qu'une simple boîte mail, c'est l'épine dorsale de toute ton existence numérique. Tu as confié l'intégralité des clés de ta vie au même acteur.
-
-Une simple suspension de compte (pour une violation fictive de CGU dictée par une IA ou un piratage de ton mot de passe) te déconnecterait du monde. 
-{{#if is_sso_addict}}
-Vu que tu te connectes partout en un clic via ce compte, toutes les portes du net se fermeront devant toi simultanément.
-{{/if}}
-
-{{#if bad_2fa}}
-L'utilisation d'une méthode de double authentification liée à ton numéro (SMS) ou à ton compte cloud aggrave le problème. Les pirates raffolent du SIM Swapping.
-{{/if}}
-
-{{#if is_pro_finance}}
-Le plus terrifiant ? Tes finances y sont directement liées. Une modération automatique aveugle risque de bloquer tes moyens de paiement et te couper de tes banques.
-{{/if}}
-
-{{#if no_local_backup}}
-Et la disparition de tes données ({{critical_services}}) ne serait pas temporaire : sans disque dur de secours chez toi, c'est une destruction totale. Zéro retour en arrière possible.
-{{/if}}
-
-Tu n'es pas le client de ces plateformes, tu es une simple ligne de données dans un serveur géant. La chute sera d'une violence inouïe si tu n'appliques pas la To-Do list ci-dessous dès ce soir.`
-};
+export const scenarioBlocks = [
+  {
+    time: "T+0 min",
+    condition: () => true,
+    text: `Notification sur ton téléphone : "Votre compte a été suspendu pour violation des conditions d'utilisation." Pas d'email. Pas d'explication. Pas d'humain à appeler.`
+  },
+  {
+    time: "T+2 min",
+    condition: (vars) => vars.is_google_email || vars.is_apple_email,
+    text: `Tu demandes un lien de récupération. L'assistance automatisée t'envoie un code de vérification sur... ton adresse principale. L'adresse suspendue. La boucle est fermée.`
+  },
+  {
+    time: "T+5 min",
+    condition: (vars) => vars.bad_pw,
+    text: `Tu essaies de te connecter directement à un autre service pour contacter quelqu'un. Ton gestionnaire de mots de passe, c'est ton navigateur. Le navigateur est lié à ce compte. Tu ne te souviens d'aucun mot de passe. Tu ne peux aller nulle part.`
+  },
+  {
+    time: "T+10 min",
+    condition: (vars) => vars.bad_2fa,
+    text: `Tu tentes une connexion avec un ancien mot de passe. On te demande le code de double authentification. Mais ton application 2FA est synchronisée sur le cloud de ton compte suspendu, ou via un numéro lié. L'accès t'est refusé.`
+  },
+  {
+    time: "T+15 min",
+    condition: (vars) => vars.is_sso_addict,
+    text: `Tu ouvres chacune de tes applications en cherchant un accès de secours. "Se connecter avec Google/Apple". Netflix, Spotify, tes outils de travail... Chaque porte que tu essaies est verrouillée par la même serrure cassée.`
+  },
+  {
+    time: "T+1 h",
+    condition: (vars) => vars.has_critical_data,
+    text: (vars) => {
+      const services = vars.critical_services.filter(v => v !== "Aucun de ces services").join(', ');
+      return `Tu réalises l'étendue des dégâts. Tes données personnelles, tes souvenirs, tout ce qui est dans ${services}. Ce n'est pas "inaccessible" temporairement. C'est scellé.`;
+    }
+  },
+  {
+    time: "T+3 h",
+    condition: (vars) => vars.is_pro_finance,
+    text: `Tu dois faire un virement urgent et tu contactes ta banque. Par mesure de sécurité, ils déclenchent une vérification et envoient le code sur ton adresse principale. Celle qui n'existe plus pour toi. Tu ne peux pas confirmer ta propre identité.`
+  },
+  {
+    time: "T+24 h",
+    condition: (vars) => vars.no_local_backup && vars.has_critical_data,
+    text: `Un jour entier s'est écoulé. Puisque tu n'as pas de sauvegarde locale, ton patrimoine numérique est virtuellement détruit. Tu n'as aucun moyen de revenir en arrière. Tes données appartenaient à une IA.`
+  },
+  {
+    time: "T+24 h",
+    condition: (vars) => !vars.no_local_backup && vars.has_critical_data,
+    text: `Un jour entier s'est écoulé. Heureusement, tu as une sauvegarde locale. Tes souvenirs sont en sécurité sur ton disque dur, mais tu as perdu ton identité numérique et tes moyens de contact.`
+  },
+  {
+    time: "Bilan",
+    condition: (vars) => vars.rupturePointsCount === 0,
+    text: `Finalement, la suspension de ton compte t'ennuie, mais elle ne te détruit pas. Tu as su compartimenter tes accès. Ton mot de passe est chez toi, tes emails vitaux aussi, et tes sauvegardes sont au chaud. Tu es un survivant numérique.`
+  }
+];

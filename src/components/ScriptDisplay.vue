@@ -1,29 +1,49 @@
 <template>
   <div class="script-box">
-    <div class="typewriter-content" v-html="displayedText"></div>
+    <div class="typewriter-content">
+      <div v-for="(block, index) in displayedBlocks" :key="index" class="narrative-block">
+        <span class="timestamp">[{{ block.time }}]</span>
+        <span class="text" v-html="block.text"></span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 
-const props = defineProps(['script']);
-const displayedText = ref('');
+const props = defineProps(['blocks']);
+const displayedBlocks = ref([]);
 
 onMounted(() => {
-  // Effet typewriter simple
-  const chars = props.script.split('');
-  let i = 0;
-  
-  const interval = setInterval(() => {
-    if (i < chars.length) {
-      // Gère les sauts de ligne correctement avec HTML
-      displayedText.value += chars[i] === '\n' ? '<br>' : chars[i];
-      i++;
-    } else {
-      clearInterval(interval);
+  let blockIndex = 0;
+
+  const showNextBlock = () => {
+    if (blockIndex < props.blocks.length) {
+      const currentBlock = props.blocks[blockIndex];
+      // On crée la structure vide pour ce bloc
+      const currentDisplayedBlock = { time: currentBlock.time, text: '' };
+      displayedBlocks.value.push(currentDisplayedBlock);
+      
+      const textToType = currentBlock.text;
+      let charIndex = 0;
+      
+      const typeChar = () => {
+        if (charIndex < textToType.length) {
+          displayedBlocks.value[blockIndex].text += textToType[charIndex] === '\n' ? '<br>' : textToType[charIndex];
+          charIndex++;
+          setTimeout(typeChar, 15); // Vitesse de frappe par caractère
+        } else {
+          blockIndex++;
+          setTimeout(showNextBlock, 600); // Pause avant d'afficher le bloc suivant
+        }
+      };
+      
+      typeChar();
     }
-  }, 20); // Vitesse
+  };
+
+  showNextBlock();
 });
 </script>
 
@@ -33,5 +53,13 @@ onMounted(() => {
   padding: 30px; border-radius: 12px; margin-top: 30px;
   font-family: 'Courier New', Courier, monospace; line-height: 1.6;
   font-size: 1.1rem; color: #e0e0e0;
+}
+.narrative-block {
+  margin-bottom: 20px;
+}
+.timestamp {
+  color: #ff9800;
+  font-weight: bold;
+  margin-right: 12px;
 }
 </style>
