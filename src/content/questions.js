@@ -9,14 +9,15 @@ export const questions = [
     profileVar: 'mobile_os',
     score: (answer) => {
       if (answer.startsWith('Android classique')) return 9;
-      if (answer.startsWith('iOS')) return 6;
+      if (answer.startsWith('iOS')) return 5;
+      if (answer.startsWith('Android dégooglisé')) return -5
       return 0;
     },
     mascotReaction: (answer) => {
       if (answer.startsWith('Android classique')) return "L'écosystème Google au creux de ta main. Il voit tout, tout le temps.";
-      if (answer.startsWith('iOS')) return "Apple : un écosystème fermé. Très privé, jusqu'à ce qu'ils décident de t'enfermer dehors.";
-      if (answer.includes('dégooglisé')) return "Respect. Une vraie rupture matérielle demande des sacrifices.";
-      return "Le choix radical de la déconnexion !";
+      if (answer.startsWith('iOS')) return "Apple : un écosystème fermé. Très privé... jusqu'a ce qu'ils ne le veulent plus.";
+      if (answer.includes('dégooglisé')) return "Respect.";
+      return "Euh... tu vas bien?";
     },
     next: 'browser'
   },
@@ -29,14 +30,15 @@ export const questions = [
     weight: 2,
     profileVar: 'browser',
     score: (answer) => {
-      if (answer === 'Google Chrome' || answer === 'Microsoft Edge') return 10;
-      if (answer === 'Safari (Apple)') return 7;
-      return 0;
+      if (answer === 'Google Chrome' || answer === 'Microsoft Edge') return 15;
+      if (answer === 'Safari (Apple)') return 0;
+      return -5;
     },
     mascotReaction: (answer) => {
-      if (answer === 'Google Chrome') return "Chrome n'est pas qu'un navigateur, c'est une sonde reliée à ton identité Google.";
-      if (answer.includes('Brave')) return "Un choix indépendant, tu coupes l'aspiration des données à la source.";
-      return "D'accord, continuons.";
+      if (answer === 'Google Chrome') return "Chrome n'est pas qu'un navigateur, c'est une sonde reliée à ton identité Google. Ils voient tous ce que tu fais, en direct.";
+      if (answer.includes('Brave')) return "Tu as déjà fait 50% du boulot. Des génies t'offres Chrome mais sans Google, et toi tu l'utilise. Elle est pas belle la vie?";
+      if (answer.includes('Safari')) return "Bien! Safari est open source et privé, même si il t'es imposé par Apple"
+      return "D'accord, continuons";
     },
     next: 'primary_email'
   },
@@ -45,19 +47,22 @@ export const questions = [
     theme: 'email',
     type: 'single',
     text: "Où est hébergée ton adresse email PRINCIPALE (celle pour la banque, les impôts, l'administratif) ?",
-    options: ["Google (Gmail)", "Microsoft (Outlook/Hotmail)", "Apple (iCloud)", "Service chiffré (ProtonMail, Tuta...)", "Mon propre nom de domaine"],
+    options: ["Google (Gmail)", "Microsoft (Outlook/Hotmail)", "Apple (iCloud)", "Service chiffré (ProtonMail, Tuta...)", "Mon propre nom de domaine", "Je m'auto heberge"],
     weight: 3,
     profileVar: 'primary_email',
     score: (answer) => {
       if (answer.includes('Gmail')) return 10;
       if (answer.includes('Microsoft') || answer.includes('Apple')) return 8;
-      if (answer.includes('Proton')) return 2;
-      return 0;
+      if (answer.includes('Proton')) return -2;
+      if (answer.includes("auto heberge")) return -10;
+      return -4;
     },
     mascotReaction: (answer) => {
-      if (answer.includes('Gmail')) return "Toute ta vie administrative dépend d'une clé contrôlée par une régie publicitaire.";
+      if (answer.includes('Gmail')) return "Toute ta vie administrative dépend d'une clé contrôlée par une régie publicitaire. Peu mieux faire.";
+      if (answer.includes("ProtonMail")) return "Je fais pareil. On a la privacy ET la simplicitée. Big brain"
       if (answer.includes('domaine')) return "Excellent. Si l'hébergeur te bloque, tu changes d'hébergeur en gardant ton adresse.";
-      return "C'est noté. L'email est le passe-partout du net.";
+      if (answer.includes('auto heberge')) return "T'a pété un cable? C'est meme plus de la privacy la. Tu gère litteralement une infra pro, pour toi. Je m'incline"
+      return "C'est noté.";
     },
     next: 'password_manager'
   },
@@ -73,11 +78,11 @@ export const questions = [
       if (answer.includes('Google Chrome')) return 10;
       if (answer.includes('Apple')) return 8;
       if (answer.includes('carnet')) return 4;
-      return 0;
+      return -5;
     },
     mascotReaction: (answer) => {
-      if (answer.includes('Google Chrome')) return "Danger : Un robot Google te bloque Gmail, tu perds AUSSI tes mots de passe d'un coup.";
-      if (answer.includes('indépendant')) return "La séparation des pouvoirs. C'est la règle d'or pour survivre.";
+      if (answer.includes('Google Chrome')) return "Donc si tu perd l'acces à ton compte Google... tu perd l'accès à TOUT tes comptes? ";
+      if (answer.includes('indépendant')) return "Tu vis dans le futur. I love it.";
       return "Une méthode physique, attention aux mots de passe trop simples ou répétés.";
     },
     next: 'two_factor'

@@ -37,7 +37,7 @@ export const useQuizStore = defineStore('quiz', {
     currentQuestionId: null,
     answers: {},
     history: [],
-    mascotMessage: "Hey man! Je suis PrivacyBot. Je suis là pour voir si une un Google peu ruiner ta vie en un click. Sympa, non?",
+    mascotMessage: "Hey man! Je suis PrivacyBot. Je suis là pour voir si Google peu ruiner ta vie en un clic. Sympa, non?",
     navDirection: 'forward'
   }),
 
@@ -134,7 +134,7 @@ export const useQuizStore = defineStore('quiz', {
       this.currentQuestionId = questions[0].id;
       this.answers = {};
       this.history = [];
-      this.mascotMessage = "On va vérifier à quel point ta vie numérique est concentrée. C'est parti.";
+      this.mascotMessage = "On va vérifier à quel point ta vie numérique est controlée par des inconus. Prêt?";
       this.saveState();
     },
 
@@ -186,7 +186,7 @@ export const useQuizStore = defineStore('quiz', {
       this.currentQuestionId = null;
       this.answers = {};
       this.history = [];
-      this.mascotMessage = "Prêt à refaire l'audit ?";
+      this.mascotMessage = "Tu t'es trompé, ou tu veux simplement voir toute les réponses? La curiositée est un vilain défaut";
       localStorage.removeItem('dda_state');
     }
   }
