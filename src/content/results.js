@@ -1,56 +1,70 @@
-/**
- * TEXTES DES RÉSULTATS
- * --------------------
- * Ces textes utilisent un système de templating (géré dans src/utils/scoring.js).
- * Variables injectables : {{email_provider}}, {{years_on_platform}}, etc.
- * Blocs conditionnels : {{#if has_local_backup}} Texte... {{/if}}
- */
-
 export const results = {
-  resilient: `Tu as une stratégie saine.
-  
-Si ton fournisseur principal disparaît demain, ce sera un mauvais moment à passer, mais ta vie numérique n'est pas en danger. Tu as évité le piège du "tout-en-un" magique.
+  resilient: `Tu es un survivant numérique.
 
-{{#if has_local_backup}}
-Surtout, ta copie locale te protège de l'effacement arbitraire. Bravo pour ça.
-{{/if}}`,
+Félicitations. Tu as compris que la gratuité se payait en contrôle. En ayant compartimenté tes accès et en évitant le piège du "tout-en-un" magique, tu as repris la souveraineté sur ton identité.
 
-  fragile: `Tu as mis pas mal d'oeufs dans le même panier.
+Même si un géant du net décide de bannir tes comptes de manière automatisée demain matin, tu survivras sans dommage majeur. 
+{{#unless bad_pw}}Tes accès sont gérés de manière autonome,{{/unless}} et ton hygiène numérique est un exemple rare.
 
-Ton compte {{email_provider}} n'est pas qu'une boîte mail, c'est ta clé passe-partout. Un algorithme te bloque demain, et tu seras surpris de voir à quelle vitesse les murs se referment.
+Continue d'appliquer cette discipline militaire et de sensibiliser ton entourage. Le monde numérique a besoin de gens comme toi pour prouver qu'il existe une alternative.`,
 
-{{#if sso_level}}
-Ces applications où tu te connectes en un clic ? Elles te fermeront leurs portes en même temps.
+  fragile: `Tu as commencé à diversifier, mais des maillons vitaux restent exposés.
+
+Tu as conscience du problème, pourtant certaines habitudes te mettent en danger. Le jour où un algorithme décide par erreur que ton compte viole les conditions d'utilisation, tu seras temporairement paralysé.
+
+{{#if is_pro_finance}}
+Le point le plus inquiétant, c'est que tes finances y sont liées. Une erreur d'une IA, et c'est potentiellement tes accès bancaires qui sautent sans préavis.
 {{/if}}
 
-Il suffirait d'un incident pour te paralyser plusieurs jours.`,
-
-  exposed: `T'es à un email de tout perdre.
-
-Imagine que tu te réveilles demain et que ton compte {{email_provider}} ne répond plus. Pas de message d'erreur clair. Juste : "Ce compte a été suspendu."
-
-{{#if years_on_platform}}
-{{years_on_platform}} ans d'historique partis en fumée en une fraction de seconde.
+{{#if bad_pw}}
+Le fait de laisser ton navigateur ou ton écosystème gérer tes mots de passe est un piège. Un blocage t'empêcherait d'accéder à l'intégralité de tes autres sites web.
 {{/if}}
 
-{{#if storage_services}}
-Et pour couronner le tout, ce que tu avais sur {{storage_services}} devient instantanément inaccessible.
+{{#if no_local_backup}}
+De plus, sans sauvegarde locale, tes données ne t'appartiennent pas vraiment. Elles sont juste en location. Une panne sévère ou un blocage et tes souvenirs disparaissent.
 {{/if}}
 
-{{#if has_pro_website}}
-Même ton site web pourrait tomber, vu que son administration dépend du même compte.
+Il est grand temps de couper les derniers cordons qui te lient au monopole du cloud.`,
+
+  exposed: `Tu es à un clic au-dessus du vide.
+
+Tu dépends massivement d'un écosystème fermé. La concentration de tes services crée un goulot d'étranglement extrêmement dangereux.
+
+Si ton compte principal est suspendu par un processus algorithmique automatisé (ce qui arrive tous les jours à des utilisateurs honnêtes, sans intervention humaine) :
+- Tu perds immédiatement l'accès à ta boîte de réception.
+{{#if bad_pw}}
+- Tes mots de passe, enfermés dans le navigateur, s'évaporent instantanément. Tu ne pourras même plus te connecter ailleurs pour changer ton email.
+{{/if}}
+{{#if has_critical_data}}
+- Tes données privées ({{critical_services}}) sont scellées et rendues inaccessibles d'une seconde à l'autre.
 {{/if}}
 
-Tu as construit une maison sur un terrain qui ne t'appartient pas.`,
-
-  critical: `C'est une maison de cartes.
-
-Ta dépendance à {{email_provider}} est totale. Si ce service décide que tu as enfreint ses conditions d'utilisation (et ça arrive automatiquement par erreur), ta vie numérique s'arrête net.
-
-Plus d'email. Plus de contacts. 
-{{#if storage_services}}
-Tout ce qui est sur {{storage_services}} disparaît.
+{{#if no_local_backup}}
+Puisque tu n'as pas pris la peine de faire une copie physique, tout ton patrimoine numérique est littéralement pris en otage par une multinationale.
 {{/if}}
 
-Ce n'est pas "si" ça arrive, c'est "quand". Tu n'es pas le client de ces plateformes, tu es un locataire précaire sans contrat de bail. Commence à exporter tes données dès aujourd'hui.`
+Il suffirait d'un piratage de ton email ou d'un faux signalement robotisé pour te rayer de la carte numérique. Réagis.`,
+
+  critical: `Tu es à la merci d'un algorithme. C'est l'alerte maximale.
+
+Ton adresse {{primary_email}} n'est pas qu'une simple boîte mail, c'est l'épine dorsale de toute ton existence numérique. Tu as confié l'intégralité des clés de ta vie au même acteur.
+
+Une simple suspension de compte (pour une violation fictive de CGU dictée par une IA ou un piratage de ton mot de passe) te déconnecterait du monde. 
+{{#if is_sso_addict}}
+Vu que tu te connectes partout en un clic via ce compte, toutes les portes du net se fermeront devant toi simultanément.
+{{/if}}
+
+{{#if bad_2fa}}
+L'utilisation d'une méthode de double authentification liée à ton numéro (SMS) ou à ton compte cloud aggrave le problème. Les pirates raffolent du SIM Swapping.
+{{/if}}
+
+{{#if is_pro_finance}}
+Le plus terrifiant ? Tes finances y sont directement liées. Une modération automatique aveugle risque de bloquer tes moyens de paiement et te couper de tes banques.
+{{/if}}
+
+{{#if no_local_backup}}
+Et la disparition de tes données ({{critical_services}}) ne serait pas temporaire : sans disque dur de secours chez toi, c'est une destruction totale. Zéro retour en arrière possible.
+{{/if}}
+
+Tu n'es pas le client de ces plateformes, tu es une simple ligne de données dans un serveur géant. La chute sera d'une violence inouïe si tu n'appliques pas la To-Do list ci-dessous dès ce soir.`
 };
