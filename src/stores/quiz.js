@@ -3,7 +3,6 @@ import { questions } from '../content/questions';
 import { scenarioBlocks } from '../content/results';
 import { advices } from '../content/advices';
 
-// Helper pour calculer la profondeur maximale restante de l'arbre
 function getMaxDepth(qId, visited = new Set()) {
   if (!qId || visited.has(qId)) return 0;
   visited.add(qId);
@@ -32,11 +31,11 @@ function getMaxDepth(qId, visited = new Set()) {
 
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
-    phase: 'intro', // 'intro', 'quiz', 'result'
+    phase: 'intro', // 'intro', 'quiz', 'analyzing', 'result'
     currentQuestionId: null,
     answers: {},
     history: [],
-    mascotMessage: "Hey man! Je suis PrivacyBot. Je suis là pour voir si Google peu ruiner ta vie en un clic. Sympa, non?",
+    mascotMessage: "Hey ! Je suis PrivacyBot. Je suis là pour voir si l'algorithme d'un géant du web peut ruiner ta vie en un clic. Prêt ?",
     navDirection: 'forward'
   }),
 
@@ -61,7 +60,7 @@ export const useQuizStore = defineStore('quiz', {
         if (q && answer !== undefined) {
           const delta = q.score(answer);
           scoreRaw += delta * q.weight;
-          scoreMax += 10 * q.weight;
+          scoreMax += 15 * q.weight; 
           if (q.profileVar) profileVars[q.profileVar] = answer;
         }
       }
@@ -69,30 +68,29 @@ export const useQuizStore = defineStore('quiz', {
       let scoreNormalized = scoreMax === 0 ? 0 : Math.round(Math.max(0, Math.min(100, (scoreRaw / scoreMax) * 100)));
 
       let profile = 'resilient';
-      if (scoreNormalized > 75) profile = 'critical';
-      else if (scoreNormalized > 50) profile = 'exposed';
-      else if (scoreNormalized > 25) profile = 'fragile';
+      if (scoreNormalized > 70) profile = 'critical';
+      else if (scoreNormalized > 45) profile = 'exposed';
+      else if (scoreNormalized > 20) profile = 'fragile';
 
-      // CRÉATION DE FLAGS LOGIQUES POUR LES TEMPLATES (Évite les phrases absurdes)
       profileVars.is_google_email = profileVars.primary_email?.includes('Google');
       profileVars.is_apple_email = profileVars.primary_email?.includes('Apple');
       
-      profileVars.bad_pw = profileVars.password_manager && (profileVars.password_manager.includes('Google Chrome') || profileVars.password_manager.includes('Apple'));
-      profileVars.bad_2fa = profileVars.two_factor && (profileVars.two_factor.includes('SMS') || profileVars.two_factor.includes('Google'));
-      profileVars.bad_browser = profileVars.browser && (profileVars.browser.includes('Chrome') || profileVars.browser.includes('Edge'));
-      profileVars.bad_map = profileVars.maps && (profileVars.maps.includes('Google Maps') || profileVars.maps.includes('Waze'));
+      profileVars.bad_pw = profileVars.password_manager && profileVars.password_manager.includes('Google');
+      profileVars.bad_2fa = profileVars.two_factor && (profileVars.two_factor.includes('Appuyez sur Oui') || profileVars.two_factor.includes('SMS'));
+      profileVars.bad_browser = profileVars.browser && profileVars.browser.includes('Chrome');
       
-      profileVars.has_critical_data = profileVars.critical_services && profileVars.critical_services.length > 0 && !profileVars.critical_services.includes('Aucun de ces services');
-      profileVars.is_sso_addict = profileVars.sso_level >= 4;
-      profileVars.no_local_backup = profileVars.has_local_backup === 'Non';
-      profileVars.is_pro_finance = profileVars.pro_finance === 'Oui';
+      profileVars.has_critical_data = profileVars.critical_services && profileVars.critical_services.length > 0 && !profileVars.critical_services.includes('Rien de tout ça');
+      profileVars.no_local_backup = profileVars.has_critical_data; 
+      
+      profileVars.is_sso_addict = profileVars.sso_apps && profileVars.sso_apps.length > 0 && !profileVars.sso_apps.includes("Je n'utilise pas");
+      profileVars.is_pro_finance = profileVars.pro_finance && profileVars.pro_finance.includes('bloqué bancairement');
 
       let rupturePointsCount = 0;
       if (profileVars.is_google_email || profileVars.is_apple_email) rupturePointsCount++;
       if (profileVars.bad_pw) rupturePointsCount++;
       if (profileVars.bad_2fa) rupturePointsCount++;
       if (profileVars.is_sso_addict) rupturePointsCount++;
-      if (profileVars.no_local_backup) rupturePointsCount++;
+      if (profileVars.has_critical_data) rupturePointsCount++;
       if (profileVars.is_pro_finance) rupturePointsCount++;
 
       profileVars.rupturePointsCount = rupturePointsCount;
@@ -147,7 +145,7 @@ export const useQuizStore = defineStore('quiz', {
       this.currentQuestionId = questions[0].id;
       this.answers = {};
       this.history = [];
-      this.mascotMessage = "On va vérifier à quel point ta vie numérique est controlée par des inconus. Prêt?";
+      this.mascotMessage = "C'est parti. Ne mens pas, l'algorithme lit en toi.";
       this.saveState();
     },
 
@@ -171,10 +169,15 @@ export const useQuizStore = defineStore('quiz', {
       if (nextId) {
         this.currentQuestionId = nextId;
       } else {
-        this.phase = 'result';
-        this.mascotMessage = "Analyse terminée. Prépare-toi à voir la réalité en face.";
+        this.phase = 'analyzing';
       }
       
+      this.saveState();
+    },
+
+    showResults() {
+      this.phase = 'result';
+      this.mascotMessage = "Analyse terminée. L'heure de vérité a sonné.";
       this.saveState();
     },
 
@@ -182,14 +185,14 @@ export const useQuizStore = defineStore('quiz', {
       this.navDirection = 'backward';
       if (this.history.length === 0) {
         this.phase = 'intro';
-        this.mascotMessage = "On recommence ?";
+        this.mascotMessage = "Tu hésites ?";
         this.saveState();
         return;
       }
       const prevId = this.history.pop();
       delete this.answers[prevId];
       this.currentQuestionId = prevId;
-      this.mascotMessage = "Pas de souci, on change ça.";
+      this.mascotMessage = "On modifie ça, pas de souci.";
       this.saveState();
     },
 
@@ -199,7 +202,7 @@ export const useQuizStore = defineStore('quiz', {
       this.currentQuestionId = null;
       this.answers = {};
       this.history = [];
-      this.mascotMessage = "Tu t'es trompé, ou tu veux simplement voir toute les réponses? La curiositée est un vilain défaut";
+      this.mascotMessage = "La curiosité est un vilain défaut, mais recommençons !";
       localStorage.removeItem('dda_state');
     }
   }

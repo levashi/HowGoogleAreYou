@@ -21,7 +21,6 @@ onMounted(() => {
   const showNextBlock = () => {
     if (blockIndex < props.blocks.length) {
       const currentBlock = props.blocks[blockIndex];
-      // On crée la structure vide pour ce bloc
       const currentDisplayedBlock = { time: currentBlock.time, text: '' };
       displayedBlocks.value.push(currentDisplayedBlock);
       
@@ -32,10 +31,10 @@ onMounted(() => {
         if (charIndex < textToType.length) {
           displayedBlocks.value[blockIndex].text += textToType[charIndex] === '\n' ? '<br>' : textToType[charIndex];
           charIndex++;
-          setTimeout(typeChar, 15); // Vitesse de frappe par caractère
+          setTimeout(typeChar, 15);
         } else {
           blockIndex++;
-          setTimeout(showNextBlock, 600); // Pause avant d'afficher le bloc suivant
+          setTimeout(showNextBlock, 600);
         }
       };
       
@@ -49,16 +48,16 @@ onMounted(() => {
 
 <style scoped>
 .script-box {
-  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+  background: var(--script-bg); border: 1px solid var(--border-color);
   padding: 30px; border-radius: 12px; margin-top: 30px;
   font-family: 'Courier New', Courier, monospace; line-height: 1.6;
-  font-size: 1.1rem; color: #e0e0e0;
+  font-size: 1.1rem; color: var(--text-color);
 }
 .narrative-block {
   margin-bottom: 20px;
 }
 .timestamp {
-  color: #ff9800;
+  color: var(--warning-color);
   font-weight: bold;
   margin-right: 12px;
 }

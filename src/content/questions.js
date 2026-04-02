@@ -15,8 +15,8 @@ export const questions = [
     },
     mascotReaction: (answer) => {
       if (answer.startsWith('Android classique')) return "L'écosystème Google au creux de ta main. Il voit tout, tout le temps.";
-      if (answer.startsWith('iOS')) return "Apple : un écosystème fermé. Très privé... jusqu'a ce qu'ils ne le veulent plus.";
-      if (answer.includes('dégooglisé')) return "Respect.";
+      if (answer.startsWith('iOS')) return "Apple : un écosystème fermé. Très privé... jusqu'à ce qu'ils en décident autrement.";
+      if (answer.includes('dégooglisé')) return "Respect. T'as choisi la pilule rouge.";
       return "Euh... tu vas bien?";
     },
     next: 'browser'
@@ -26,19 +26,19 @@ export const questions = [
     theme: 'tracking',
     type: 'single',
     text: "Quel navigateur web utilises-tu par défaut sur ton ordinateur / téléphone ?",
-    options: ["Google Chrome", "Microsoft Edge", "Safari (Apple)", "Brave / Firefox / Vivaldi / LibreWolf"],
+    options: ["Google Chrome / Microsoft Edge", "Safari (Apple)", "Brave / Firefox / Vivaldi / LibreWolf"],
     weight: 2,
     profileVar: 'browser',
     score: (answer) => {
-      if (answer === 'Google Chrome' || answer === 'Microsoft Edge') return 15;
-      if (answer === 'Safari (Apple)') return 0;
+      if (answer.includes('Chrome')) return 15;
+      if (answer.includes('Safari')) return 0;
       return -5;
     },
     mascotReaction: (answer) => {
-      if (answer === 'Google Chrome') return "Chrome n'est pas qu'un navigateur, c'est une sonde reliée à ton identité Google. Ils voient tous ce que tu fais, en direct.";
-      if (answer.includes('Brave')) return "Tu as déjà fait 50% du boulot. Des génies t'offres Chrome mais sans Google, et toi tu l'utilise. Elle est pas belle la vie?";
-      if (answer.includes('Safari')) return "Bien! Safari est open source et privé, même si il t'es imposé par Apple"
-      return "D'accord, continuons";
+      if (answer.includes('Chrome')) return "Chrome n'est pas qu'un navigateur, c'est une sonde directement reliée à ton identité Google.";
+      if (answer.includes('Firefox') || answer.includes('Brave')) return "Tu as déjà fait 50% du boulot. T'éloigner du monopole est vital.";
+      if (answer.includes('Safari')) return "C'est privé, même si ça reste cadenassé par la pomme.";
+      return "D'accord, continuons.";
     },
     next: 'primary_email'
   },
@@ -46,22 +46,21 @@ export const questions = [
     id: 'primary_email',
     theme: 'email',
     type: 'single',
-    text: "Où est hébergée ton adresse email PRINCIPALE (celle pour la banque, les impôts, l'administratif) ?",
-    options: ["Google (Gmail)", "Microsoft (Outlook/Hotmail)", "Apple (iCloud)", "Service chiffré (ProtonMail, Tuta...)", "Mon propre nom de domaine", "Je m'auto heberge"],
+    text: "Où est hébergée ton adresse email PRINCIPALE (celle de la banque, des impôts) ?",
+    options: ["Google (Gmail) / Microsoft (Outlook)", "Apple (iCloud)", "Service chiffré (ProtonMail, Tuta...)", "Mon propre nom de domaine"],
     weight: 3,
     profileVar: 'primary_email',
     score: (answer) => {
-      if (answer.includes('Gmail')) return 10;
-      if (answer.includes('Microsoft') || answer.includes('Apple')) return 8;
+      if (answer.includes('Google') || answer.includes('Microsoft')) return 10;
+      if (answer.includes('Apple')) return 8;
       if (answer.includes('Proton')) return -2;
-      if (answer.includes("auto heberge")) return -10;
+      if (answer.includes("domaine")) return -10;
       return -4;
     },
     mascotReaction: (answer) => {
-      if (answer.includes('Gmail')) return "Toute ta vie administrative dépend d'une clé contrôlée par une régie publicitaire. Peu mieux faire.";
-      if (answer.includes("ProtonMail")) return "Je fais pareil. On a la privacy ET la simplicitée. Big brain"
+      if (answer.includes('Google')) return "Toute ta vie administrative dépend d'une clé contrôlée par une régie publicitaire. Magnifique.";
+      if (answer.includes("ProtonMail")) return "Je fais pareil. On a la privacy ET la simplicité. Big brain.";
       if (answer.includes('domaine')) return "Excellent. Si l'hébergeur te bloque, tu changes d'hébergeur en gardant ton adresse.";
-      if (answer.includes('auto heberge')) return "T'a pété un cable? C'est meme plus de la privacy la. Tu gère litteralement une infra pro, pour toi. Je m'incline"
       return "C'est noté.";
     },
     next: 'password_manager'
@@ -70,20 +69,23 @@ export const questions = [
     id: 'password_manager',
     theme: 'security',
     type: 'single',
-    text: "Comment stockes-tu la majorité de tes mots de passe ?",
-    options: ["Dans Google Chrome / Mon compte Google", "Dans le Trousseau Apple (iCloud)", "Un gestionnaire indépendant (Bitwarden, 1Password...)", "Dans ma tête ou sur un carnet"],
-    weight: 3,
+    text: "Tu te connectes à un nouveau PC. Où dois-tu aller en premier pour retrouver tous tes mots de passe ?",
+    options: [
+      "Sur mon compte Google (Chrome) ou Apple (Trousseau)",
+      "Sur un gestionnaire indépendant (Bitwarden, 1Password...)",
+      "Nulle part, je les connais de tête ou sur un carnet"
+    ],
+    weight: 4,
     profileVar: 'password_manager',
     score: (answer) => {
-      if (answer.includes('Google Chrome')) return 10;
-      if (answer.includes('Apple')) return 8;
+      if (answer.includes('Google')) return 12;
       if (answer.includes('carnet')) return 4;
       return -5;
     },
     mascotReaction: (answer) => {
-      if (answer.includes('Google Chrome')) return "Donc si tu perd l'acces à ton compte Google... tu perd l'accès à TOUT tes comptes? ";
-      if (answer.includes('indépendant')) return "Tu vis dans le futur. I love it.";
-      return "Une méthode physique, attention aux mots de passe trop simples ou répétés.";
+      if (answer.includes('Google')) return "Attends... Donc si Google/Apple te bloque l'accès à ce compte principal, tu n'as plus aucun mot de passe pour te connecter à tes autres services de secours ?";
+      if (answer.includes('indépendant')) return "Tu as séparé la clé du coffre de la clé de la maison. Très intelligent.";
+      return "Une méthode physique qui ne craint pas le bannissement. Attention aux mots de passe trop simples.";
     },
     next: 'two_factor'
   },
@@ -91,20 +93,71 @@ export const questions = [
     id: 'two_factor',
     theme: 'security',
     type: 'single',
-    text: "Pour la Double Authentification (2FA) sur tes comptes sensibles, qu'utilises-tu le plus ?",
-    options: ["SMS (Numéro de téléphone)", "Google Authenticator / Microsoft Auth", "App indépendante (Aegis, Ente, Bitwarden...)", "Clé physique (Yubikey) / Je n'en ai pas"],
-    weight: 2,
+    text: "Ton téléphone rend l'âme. Tu dois te connecter en urgence à tes mails sur un PC inconnu. Que se passe-t-il au moment de la double authentification ?",
+    options: [
+      "Je suis bloqué : l'alerte 'Appuyez sur Oui' s'affiche sur mon téléphone mort.",
+      "Je suis bloqué : le SMS arrive sur ma SIM qui est dans le téléphone cassé/perdu.",
+      "Je passe par mes codes de secours imprimés, ou une app 2FA synchronisée ailleurs.",
+      "Je n'ai pas activé la double authentification (Risqué !)"
+    ],
+    weight: 3,
     profileVar: 'two_factor',
     score: (answer) => {
-      if (answer.includes('SMS')) return 8; // Risque de SIM swap
-      if (answer.includes('Google Authenticator')) return 9; // Lie au cloud propriétaire
-      return 0;
+      if (answer.includes('Appuyez sur Oui')) return 10;
+      if (answer.includes('SMS')) return 8;
+      if (answer.includes('pas activé')) return 12;
+      return -5;
     },
     mascotReaction: (answer) => {
-      if (answer.includes('SMS')) return "Le SMS est facilement interceptable (SIM Swapping). À éviter pour la banque.";
-      if (answer.includes('Google Authenticator')) return "Encore une clé enfermée chez Google. Si tu perds ton compte, tu perds tes codes.";
-      if (answer.includes('App indépendante')) return "Parfait, surtout si tu fais des backups chiffrés de tes tokens !";
-      return "Sécurisé ou risqué, tout dépend de la méthode exacte, on avance.";
+      if (answer.includes('Appuyez sur Oui') || answer.includes('SMS')) return "La fameuse boucle de la mort. Ton compte exige l'appareil pour te laisser entrer, mais tu ne peux configurer ton nouvel appareil sans accès à ton compte.";
+      if (answer.includes('codes de secours')) return "Tu as anticipé la faille du système. Chapeau.";
+      if (answer.includes('pas activé')) return "Tu ne risques pas la boucle de la mort, mais un hacker en Russie a juste besoin de ton mot de passe pour te voler ta vie entière.";
+      return "Ok, continuons.";
+    },
+    next: 'sso_apps'
+  },
+  {
+    id: 'sso_apps',
+    theme: 'identity',
+    type: 'multi',
+    text: "Sur quels types de services te connectes-tu régulièrement avec le bouton magique 'Continuer avec Google / Apple' ?",
+    options: [
+      "Divertissement (Spotify, Netflix...)",
+      "Outils de travail (Notion, Slack, Canva...)",
+      "Réseaux sociaux (Discord, TikTok...)",
+      "Je n'utilise pas ces boutons, je crée un mot de passe à chaque fois"
+    ],
+    min: 1,
+    weight: 3,
+    profileVar: 'sso_apps',
+    score: (answer) => {
+      if (answer.includes("Je n'utilise pas ces boutons")) return -5;
+      return answer.length * 4;
+    },
+    mascotReaction: (answer) => {
+      if (answer.includes("Je n'utilise pas ces boutons")) return "C'est plus long à configurer, mais tu es libre. Si Google te bannit ce soir, Spotify continuera de jouer demain.";
+      return "Une clé pour les gouverner tous. Si ton compte principal saute, c'est comme si toutes ces portes se verrouillaient instantanément de l'extérieur.";
+    },
+    next: 'pro_finance'
+  },
+  {
+    id: 'pro_finance',
+    theme: 'finance',
+    type: 'single',
+    text: "Ta banque détecte une activité suspecte et bloque ta carte. Ils t'envoient un lien de déblocage par email. Si cet email est ton adresse Google/Apple bloquée :",
+    options: [
+      "Je suis bloqué bancairement jusqu'à ce que je prouve mon identité en agence physique.",
+      "Pas de souci, j'utilise une adresse email différente (et accessible) pour ma banque."
+    ],
+    weight: 4,
+    profileVar: 'pro_finance',
+    score: (answer) => {
+      if (answer.includes('bloqué bancairement')) return 15;
+      return -5;
+    },
+    mascotReaction: (answer) => {
+      if (answer.includes('bloqué bancairement')) return "Le fameux effet domino. Une IA américaine désactive ton compte cloud pour une fausse raison, et par ricochet, tu ne peux plus payer tes courses en France.";
+      return "C'est le pare-feu ultime. L'argent doit être hermétiquement séparé du cloud grand public.";
     },
     next: 'critical_services'
   },
@@ -112,86 +165,24 @@ export const questions = [
     id: 'critical_services',
     theme: 'storage',
     type: 'multi',
-    text: "Parmi ces services Google, lesquels contiennent des données que tu n'as NULLE PART ailleurs ?",
-    options: ["Google Photos", "Google Drive", "YouTube (Vidéos perso ou Playlists)", "Google Agenda et Contacts", "Aucun de ces services"],
+    text: "Si une IA bannit ton compte cloud cette nuit sans aucune intervention humaine, que perds-tu sans aucun recours possible ?",
+    options: [
+      "Toutes mes photos de famille et souvenirs (Photos / iCloud)",
+      "Mes documents vitaux et archives (Drive / Docs)",
+      "Des abonnements (l'App Store continue de facturer sans que je puisse annuler)",
+      "Rien de tout ça, je sauvegarde tout sur un disque dur externe."
+    ],
     min: 1,
-    weight: 2,
+    weight: 3,
     profileVar: 'critical_services',
     score: (answer) => {
-      if (answer.includes("Aucun de ces services")) return 0;
-      return answer.length * 2.5;
+      if (answer.includes("Rien de tout ça")) return -10;
+      return answer.length * 4;
     },
     mascotReaction: (answer) => {
-      if (answer.includes("Aucun de ces services")) return "Impressionnant ! Le cordon ombilical avec l'hyper-cloud est coupé.";
-      return "C'est beaucoup de valeur personnelle et sentimentale concentrée au même endroit.";
-    },
-    next: 'maps'
-  },
-  {
-    id: 'maps',
-    theme: 'tracking',
-    type: 'single',
-    text: "Quelle application utilises-tu pour tes déplacements quotidiens (GPS) ?",
-    options: ["Google Maps / Waze (Google)", "Apple Plans", "OpenStreetMap / Organic Maps / Magic Earth"],
-    weight: 1,
-    profileVar: 'maps',
-    score: (answer) => {
-      if (answer.includes('Google Maps')) return 10;
-      if (answer.includes('Apple Plans')) return 5;
-      return 0;
-    },
-    mascotReaction: (answer) => {
-      if (answer.includes('Google Maps')) return "Ils connaissent ta maison, ton travail et tes habitudes de déplacement à la minute près.";
-      if (answer.includes('OpenStreetMap')) return "Cartographie collaborative et sans pistage. Magnifique !";
-      return "Un choix classique.";
-    },
-    next: 'sso_google'
-  },
-  {
-    id: 'sso_google',
-    theme: 'identity',
-    type: 'scale',
-    text: "À quelle fréquence utilises-tu le bouton \"Se connecter avec Google / Apple\" pour créer des comptes ailleurs ?",
-    min: 1,
-    max: 5,
-    labels: { min: "Jamais", max: "Partout" },
-    weight: 2,
-    profileVar: 'sso_level',
-    score: (answer) => (answer - 1) * 2.5,
-    mascotReaction: (answer) => {
-      if (answer >= 4) return "Un vrai château de cartes. Retire la carte Google, toutes les portes se verrouillent.";
-      if (answer <= 2) return "Créer des comptes séparés est plus long, mais te garantit l'indépendance.";
-      return "Pratique, mais chaque clic resserre tes liens avec la plateforme.";
-    },
-    next: 'pro_finance'
-  },
-  {
-    id: 'pro_finance',
-    theme: 'finance',
-    type: 'binary',
-    text: "Ton compte mail principal est-il lié à tes revenus ou accès bancaires (AdSense, Impôts, Applis de banque...) ?",
-    options: ["Oui", "Non"],
-    weight: 3,
-    profileVar: 'pro_finance',
-    score: (answer) => answer === 'Oui' ? 10 : 0,
-    mascotReaction: (answer) => {
-      if (answer === 'Oui') return "Alerte rouge. Une IA de modération a littéralement le pouvoir de geler tes finances.";
-      return "Ouf. Séparer l'argent du reste évite bien des catastrophes en chaîne.";
-    },
-    next: 'local_backup'
-  },
-  {
-    id: 'local_backup',
-    theme: 'recovery',
-    type: 'binary',
-    text: "As-tu une sauvegarde physique (un disque dur externe chez toi) récente et complète de tout ton cloud ?",
-    options: ["Oui", "Non"],
-    weight: 4,
-    profileVar: 'has_local_backup',
-    score: (answer) => answer === 'Oui' ? -8 : 10,
-    mascotReaction: (answer) => {
-      if (answer === 'Oui') return "MAGNIFIQUE. Le cloud n'est que l'ordinateur de quelqu'un d'autre. Ton disque dur est à toi.";
-      return "S'ils coupent les serveurs ou ton compte, l'intégralité de tes souvenirs part en fumée. Définitivement.";
+      if (answer.includes("Rien de tout ça")) return "Tu as compris que 'le cloud', c'est juste l'ordinateur de quelqu'un d'autre.";
+      if (answer.includes("abonnements")) return "Le fameux abonnement fantôme. L'accès est coupé mais la facturation continue en arrière-plan.";
+      return "Des années de vie numérique évaporées en un millième de seconde par un faux-positif de modération.";
     },
     next: null
   }

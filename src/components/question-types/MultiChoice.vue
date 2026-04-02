@@ -29,19 +29,19 @@ const selected = ref([]);
 .options-list { display: flex; flex-direction: column; gap: 12px; }
 .multi-option {
   display: flex; align-items: center; gap: 16px;
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  background: var(--bg-glass); border: 1px solid var(--border-color);
   padding: 16px 20px; border-radius: 8px; cursor: pointer; transition: all 0.2s;
-  color: white; font-size: 1.1rem;
+  color: var(--text-color); font-size: 1.1rem;
 }
-.multi-option:hover { background: rgba(255,255,255,0.1); }
-.multi-option.selected { border-color: white; background: rgba(255,255,255,0.15); }
+.multi-option:hover { background: var(--bg-glass-hover); }
+.multi-option.selected { border-color: var(--text-color); background: var(--bg-glass-hover); }
 input[type="checkbox"] { display: none; }
 .checkbox-custom {
-  width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.5); border-radius: 4px;
+  width: 20px; height: 20px; border: 2px solid var(--text-muted); border-radius: 4px;
 }
-.multi-option.selected .checkbox-custom { background: white; border-color: white; }
+.multi-option.selected .checkbox-custom { background: var(--text-color); border-color: var(--text-color); }
 .confirm-btn {
-  align-self: flex-start; background: white; color: black; padding: 12px 24px;
+  align-self: flex-start; background: var(--bg-solid); color: var(--text-inverse); padding: 12px 24px;
   border-radius: 4px; font-weight: bold; border: none; cursor: pointer; font-size: 1rem;
 }
 </style>

@@ -10,19 +10,18 @@
             {{ store.rupturePointsCount }} point{{ store.rupturePointsCount > 1 ? 's' : '' }} de rupture
           </h1>
           <p class="subtitle-small" v-if="store.rupturePointsCount >= 4">Ton écosystème numérique est un château de cartes.</p>
-          <p class="subtitle-small" v-else-if="store.rupturePointsCount > 0">Certains maillons vitaux sont exposés.</p>
-          <p class="subtitle-small" v-else>Profil résilient. Tu as compartimenté tes accès.</p>
+          <p class="subtitle-small" v-else-if="store.rupturePointsCount > 0">Certains maillons vitaux sont à découvert.</p>
+          <p class="subtitle-small" v-else>Profil résilient. Tu as sécurisé tes accès.</p>
         </div>
       </div>
       
-      <!-- Uniquement visible lors de l'export -->
       <div id="export-only-details" style="display: none;">
         <ul class="export-damages" v-if="store.rupturePointsCount > 0">
-          <li v-if="store.profileVars.is_google_email || store.profileVars.is_apple_email">Impossible de récupérer les accès principaux</li>
-          <li v-if="store.profileVars.bad_pw">Perte de tous les mots de passe</li>
-          <li v-if="store.profileVars.no_local_backup">Destruction du patrimoine numérique sans retour possible</li>
-          <li v-if="store.profileVars.is_pro_finance">Coupure des accès et vérifications bancaires</li>
-          <li v-if="store.profileVars.is_sso_addict">Déconnexion simultanée de toutes les applications tierces</li>
+          <li v-if="store.profileVars.is_google_email || store.profileVars.is_apple_email">Impossible de récupérer les accès principaux (Emails)</li>
+          <li v-if="store.profileVars.bad_pw">Mots de passe bloqués dans l'écosystème</li>
+          <li v-if="store.profileVars.has_critical_data">Destruction des données vitales (Photos, Drive...) sans retour possible</li>
+          <li v-if="store.profileVars.is_pro_finance">Coupure des accès et validations bancaires</li>
+          <li v-if="store.profileVars.is_sso_addict">Déconnexion simultanée de toutes les apps tierces</li>
         </ul>
         <div class="export-footer">
           Fais l'audit de ta dépendance sur : <strong>https://digital-dependency-audit.web.app</strong>
@@ -65,12 +64,12 @@ const exportCard = async () => {
   container.classList.add('exporting');
   details.style.display = 'block';
   
-  // Laisser le temps au DOM de se mettre à jour
   await new Promise(r => setTimeout(r, 100));
 
   try {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
     const canvas = await html2canvas(container, {
-      backgroundColor: '#121212',
+      backgroundColor: isLight ? '#f9fafb' : '#121212',
       scale: 2,
     });
     
@@ -90,7 +89,7 @@ const exportCard = async () => {
 
 <style scoped>
 .result-wrapper { 
-  max-width: 800px; margin: 0 auto; padding: 60px 20px;
+  width: 100%; max-width: 800px; margin: 0 auto; padding: 60px 20px;
 }
 .export-container {
   padding: 20px;
@@ -99,68 +98,70 @@ const exportCard = async () => {
   margin-bottom: 40px;
 }
 .export-container.exporting {
-  background: #121212; 
+  background: var(--bg-color); 
 }
 .mascot-announcement {
-  display: flex; align-items: center; justify-content: center;
-  gap: 30px; 
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  gap: 20px; 
 }
 .mascot-avatar-big {
-  font-size: 5rem; background: #2a2a2a; width: 120px; height: 120px; display: flex;
-  justify-content: center; align-items: center; border-radius: 50%;
-  border: 4px solid #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  font-size: clamp(3rem, 10vw, 5rem); 
+  background: var(--mascot-bg); 
+  width: clamp(80px, 20vw, 120px); 
+  height: clamp(80px, 20vw, 120px); 
+  display: flex; justify-content: center; align-items: center; border-radius: 50%;
+  border: 4px solid var(--text-color); box-shadow: 0 8px 24px var(--shadow-color);
   flex-shrink: 0;
 }
-.header { text-align: left; }
-.score-title { font-size: 4rem; font-weight: 800; margin: 0; line-height: 1.1; }
-.subtitle { color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-weight: 600;}
-.subtitle-small { color: rgba(255,255,255,0.7); font-size: 1.1rem; margin-top: 10px; }
+.header { text-align: center; flex: 1 1 300px; }
+@media (min-width: 600px) {
+  .header { text-align: left; }
+  .mascot-announcement { flex-wrap: nowrap; gap: 30px; }
+}
+
+.score-title { font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 800; margin: 0; line-height: 1.1; }
+.subtitle { color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 5px; font-weight: 600;}
+.subtitle-small { color: var(--text-muted); font-size: 1.1rem; margin-top: 10px; }
 
 .export-damages {
-  margin: 30px 0; padding-left: 20px; color: #ff9800; font-size: 1.1rem; line-height: 1.6;
+  margin: 30px 0; padding-left: 20px; color: var(--warning-color); font-size: 1rem; line-height: 1.5;
 }
 .export-damages li { margin-bottom: 8px; }
 .export-footer {
-  margin-top: 20px; font-size: 1rem; color: rgba(255,255,255,0.5); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;
+  margin-top: 20px; font-size: 0.9rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 15px;
 }
 
-.resilient { color: #4caf50; }
-.fragile { color: #ffeb3b; }
-.exposed { color: #ff9800; }
-.critical { color: #f44336; }
+.resilient { color: var(--safe-color); }
+.fragile { color: var(--alert-color); }
+.exposed { color: var(--warning-color); }
+.critical { color: var(--danger-color); }
 
-/* Section des conseils */
 .advices-section {
   margin-top: 50px;
   animation: fadeIn 1s 1.5s forwards;
   opacity: 0;
 }
-.advices-title { color: #fff; font-size: 1.5rem; margin-bottom: 20px; }
+.advices-title { color: var(--text-color); font-size: 1.5rem; margin-bottom: 20px; }
 .advice-card {
-  background: rgba(255,255,255,0.05); border-left: 4px solid #ff9800;
+  background: var(--bg-glass); border-left: 4px solid var(--warning-color);
   padding: 20px; border-radius: 4px; margin-bottom: 15px;
 }
-.advice-card h4 { margin: 0 0 10px 0; font-size: 1.1rem; color: #fff; }
-.advice-card p { margin: 0; color: rgba(255,255,255,0.7); line-height: 1.5; font-size: 0.95rem;}
+.advice-card h4 { margin: 0 0 10px 0; font-size: 1.1rem; color: var(--text-color); }
+.advice-card p { margin: 0; color: var(--text-muted); line-height: 1.5; font-size: 0.95rem;}
 
-.actions { margin-top: 50px; text-align: center; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;}
+.actions { margin-top: 50px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;}
+.actions button { width: 100%; max-width: 250px; }
+
 .export-btn { 
-  background: white; color: black; font-weight: bold; border: none;
-  padding: 12px 24px; border-radius: 8px; cursor: pointer; transition: 0.2s; 
+  background: var(--bg-solid); color: var(--text-inverse); font-weight: bold; border: none;
+  padding: 16px 24px; border-radius: 8px; cursor: pointer; transition: 0.2s; 
 }
 .export-btn:hover { transform: scale(1.05); }
 .reset-btn { 
-  background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white;
-  padding: 12px 24px; border-radius: 8px; cursor: pointer; transition: 0.2s;
+  background: transparent; border: 1px solid var(--border-color); color: var(--text-color);
+  padding: 16px 24px; border-radius: 8px; cursor: pointer; transition: 0.2s;
 }
-.reset-btn:hover { background: rgba(255,255,255,0.1); }
+.reset-btn:hover { background: var(--bg-glass); }
 
 @keyframes fadeIn { to { opacity: 1; } }
-
-@media (max-width: 600px) {
-  .mascot-announcement { flex-direction: column; text-align: center; gap: 15px; }
-  .header { text-align: center; }
-  .mascot-avatar-big { width: 90px; height: 90px; font-size: 4rem; }
-  .score-title { font-size: 3rem; }
-}
 </style>

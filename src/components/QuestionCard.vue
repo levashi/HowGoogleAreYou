@@ -23,7 +23,6 @@
 import { useQuizStore } from '../stores/quiz';
 import SingleChoice from './question-types/SingleChoice.vue';
 import MultiChoice from './question-types/MultiChoice.vue';
-import Scale from './question-types/Scale.vue';
 import Binary from './question-types/Binary.vue';
 import NumberInput from './question-types/NumberInput.vue';
 import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
@@ -35,7 +34,6 @@ const getComponentForType = (type) => {
   const map = {
     'single': SingleChoice,
     'multi': MultiChoice,
-    'scale': Scale,
     'binary': Binary,
     'number': NumberInput
   };
@@ -46,28 +44,32 @@ const getComponentForType = (type) => {
 <style scoped>
 .question-wrapper { 
   position: relative;
-  max-width: 800px; margin: 0 auto; min-height: 100vh;
-  display: flex; flex-direction: column; justify-content: center; padding: 40px 20px;
+  width: 100%; max-width: 800px; margin: 0 auto; flex: 1;
+  display: flex; flex-direction: column; justify-content: center; 
+  padding: 100px 20px 60px;
 }
 .back-btn {
-  position: fixed; 
-  top: 80px;
-  left: 80px;
+  position: absolute; 
+  top: 30px;
+  left: 20px;
   background: none;
   border: none;
-  color: rgba(255,255,255,0.7);
+  color: var(--text-muted);
   cursor: pointer;
-  z-index: 1000;
+  z-index: 50;
+  padding: 10px;
 }
 
-.back-btn:hover { color: white; }
+.back-btn:hover { color: var(--text-color); }
 .back-icon { width: 30px; height: 30px; }
 
-@media (max-width: 600px) {
-  .back-btn { top: 15px; left: 15px; }
-  .back-icon { width: 24px; height: 24px; }
+@media (min-width: 800px) {
+  .back-btn { top: 80px; left: 0px; }
 }
 
-.question-text { font-size: 2rem; font-weight: 600; line-height: 1.3; margin-bottom: 40px; color: white; }
+.question-text { 
+  font-size: clamp(1.4rem, 5vw, 2.2rem); 
+  font-weight: 600; line-height: 1.35; margin-bottom: 40px; color: var(--text-color); 
+}
 .input-area { width: 100%; max-width: 600px; }
 </style>
