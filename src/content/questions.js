@@ -1,3 +1,5 @@
+import { useQuizStore } from "../stores/quiz";
+
 export const questions = [
   {
     id: 'mobile_os',
@@ -14,9 +16,9 @@ export const questions = [
       return 0;
     },
     mascotReaction: (answer) => {
-      if (answer.startsWith('Android classique')) return "L'écosystème Google au creux de ta main. Il voit tout, tout le temps.";
-      if (answer.startsWith('iOS')) return "Apple : un écosystème fermé. Très privé... jusqu'à ce qu'ils en décident autrement.";
-      if (answer.includes('dégooglisé')) return "Respect. T'as choisi la pilule rouge.";
+      if (answer.startsWith('Android classique')) return "Un gros bébé de 2000 milliard de $ au creux de ta main. Prie pour qu'il ne montre pas les crocs";
+      if (answer.startsWith('iOS')) return "Apple : ils protègent tes données. Mais te force à utiliser l'app store pour la moindre app.";
+      if (answer.includes('dégooglisé')) return "Respect.";
       return "Euh... tu vas bien?";
     },
     next: 'browser'
@@ -26,19 +28,20 @@ export const questions = [
     theme: 'tracking',
     type: 'single',
     text: "Quel navigateur web utilises-tu par défaut sur ton ordinateur / téléphone ?",
-    options: ["Google Chrome / Microsoft Edge", "Safari (Apple)", "Brave / Firefox / Vivaldi / LibreWolf"],
+    options: ["Google Chrome / Microsoft Edge", "Safari (Apple)", "Brave / Firefox / Vivaldi / LibreWolf", "Autre"],
     weight: 2,
     profileVar: 'browser',
     score: (answer) => {
       if (answer.includes('Chrome')) return 15;
       if (answer.includes('Safari')) return 0;
-      return -5;
+      if (answer.includes("Brave")) -10;
+      return 2 
     },
     mascotReaction: (answer) => {
-      if (answer.includes('Chrome')) return "Chrome n'est pas qu'un navigateur, c'est une sonde directement reliée à ton identité Google.";
-      if (answer.includes('Firefox') || answer.includes('Brave')) return "Tu as déjà fait 50% du boulot. T'éloigner du monopole est vital.";
-      if (answer.includes('Safari')) return "C'est privé, même si ça reste cadenassé par la pomme.";
-      return "D'accord, continuons.";
+      if (answer.includes('Chrome')) return "Chrome te fait croire que tu as besoin de lui. Puis il utilise ton historique pour te recommander des pubs, et interdit les AdBlockers.";
+      if (answer.includes('Firefox') || answer.includes('Brave')) return "La SEULE bonne réponse";
+      if (answer.includes('Safari')) return "C'est privé, mais seulement si Apple le veut...";
+      return "D'accord, continuons...";
     },
     next: 'primary_email'
   },
@@ -73,18 +76,20 @@ export const questions = [
     options: [
       "Sur mon compte Google (Chrome) ou Apple (Trousseau)",
       "Sur un gestionnaire indépendant (Bitwarden, 1Password...)",
-      "Nulle part, je les connais de tête ou sur un carnet"
+      "Nulle part, je les connais de tête ou sur un carnet",
+      "Nulle part, j'utilise le même partout"
     ],
     weight: 4,
     profileVar: 'password_manager',
     score: (answer) => {
       if (answer.includes('Google')) return 12;
-      if (answer.includes('carnet')) return 4;
+      if (answer.includes('carnet') || answer.includes('même')) return 3;
       return -5;
     },
     mascotReaction: (answer) => {
       if (answer.includes('Google')) return "Attends... Donc si Google/Apple te bloque l'accès à ce compte principal, tu n'as plus aucun mot de passe pour te connecter à tes autres services de secours ?";
       if (answer.includes('indépendant')) return "Tu as séparé la clé du coffre de la clé de la maison. Très intelligent.";
+      if (answer.includes("même")) return "Au moins il n'y a personne dans ta tête. Enfin... je crois?"
       return "Une méthode physique qui ne craint pas le bannissement. Attention aux mots de passe trop simples.";
     },
     next: 'two_factor'
@@ -97,8 +102,9 @@ export const questions = [
     options: [
       "Je suis bloqué : l'alerte 'Appuyez sur Oui' s'affiche sur mon téléphone mort.",
       "Je suis bloqué : le SMS arrive sur ma SIM qui est dans le téléphone cassé/perdu.",
-      "Je passe par mes codes de secours imprimés, ou une app 2FA synchronisée ailleurs.",
-      "Je n'ai pas activé la double authentification (Risqué !)"
+      "Je passe par ma clef physique, ou une app 2FA synchronisée ailleurs.",
+      "Je n'ai pas activé la double authentification",
+      "J'ai un autre appareil connecté à mon compte Google pour regler le probleme voyons"
     ],
     weight: 3,
     profileVar: 'two_factor',
@@ -114,7 +120,14 @@ export const questions = [
       if (answer.includes('pas activé')) return "Tu ne risques pas la boucle de la mort, mais un hacker en Russie a juste besoin de ton mot de passe pour te voler ta vie entière.";
       return "Ok, continuons.";
     },
-    next: 'sso_apps'
+    next: (answer) => {
+      const quizz = useQuizStore()
+      if (answer.includes("J'ai un autre appareil")){
+        quizz.mascotMessage = "Ne joue pas au plus malin avec moi, on part du principe que tu n'a plus accès a ton compte principal"
+        return "retry"
+      } 
+      return "sso_apps"
+    }
   },
   {
     id: 'sso_apps',

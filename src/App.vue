@@ -7,8 +7,8 @@
       
       <!-- INTRO -->
       <div v-if="store.phase === 'intro'" class="intro-screen" key="intro">
-        <h1>Et si ton service principal disparaissait ce soir ?</h1>
-        <p>Ce n'est pas une question théorique. C'est un audit implacable de ta dépendance numérique.</p>
+        <h1>How Google Are You?</h1>
+        <p>Tu te pense probablement en securité derriere ton ecran... à moins que Google n'ai la capacitée de ruiner ta vie?</p>
         <button class="start-btn" @click="store.startQuiz">Démarrer l'audit</button>
       </div>
 

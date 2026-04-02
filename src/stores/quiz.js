@@ -17,7 +17,7 @@ function getMaxDepth(qId, visited = new Set()) {
   } else if (typeof q.next === 'function' && q.options) {
     q.options.forEach(opt => {
       const res = q.next(opt);
-      if (res) nextIds.push(res);
+      if (res && res !== 'retry') nextIds.push(res);
     });
   }
   
@@ -35,7 +35,7 @@ export const useQuizStore = defineStore('quiz', {
     currentQuestionId: null,
     answers: {},
     history: [],
-    mascotMessage: "Hey ! Je suis PrivacyBot. Je suis là pour voir si l'algorithme d'un géant du web peut ruiner ta vie en un clic. Prêt ?",
+    mascotMessage: "Hey ! Je suis PrivacyBot. Je suis là pour voir si l'algorithme d'un géant du web peut ruiner ta vie en un clic. Sympa, nan ?",
     navDirection: 'forward'
   }),
 
@@ -150,13 +150,9 @@ export const useQuizStore = defineStore('quiz', {
     },
 
     answerQuestion(answer) {
-      this.navDirection = 'forward';
       const q = this.currentQuestion;
-      this.answers[q.id] = answer;
-      this.history.push(q.id);
-
-      if (q.mascotReaction) this.mascotMessage = q.mascotReaction(answer);
-
+      
+      // 1. Déterminer la suite AVANT d'enregistrer
       let nextId = null;
       if (typeof q.next === 'string') {
         nextId = q.next;
@@ -164,6 +160,22 @@ export const useQuizStore = defineStore('quiz', {
         nextId = q.next[answer] !== undefined ? q.next[answer] : (q.next.default || null);
       } else if (typeof q.next === 'function') {
         nextId = q.next(answer);
+      }
+
+      // 2. Si c'est un retry, on change juste le message et on s'arrête
+      if (nextId === 'retry') {
+        // Le message est déjà mis à jour par la fonction next() dans questions.js
+        this.saveState();
+        return;
+      }
+
+      // 3. Sinon, on enregistre la réponse et on avance
+      this.navDirection = 'forward';
+      this.answers[q.id] = answer;
+      this.history.push(q.id);
+
+      if (q.mascotReaction) {
+        this.mascotMessage = q.mascotReaction(answer);
       }
 
       if (nextId) {
