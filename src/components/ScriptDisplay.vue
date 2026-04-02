@@ -31,10 +31,10 @@ onMounted(() => {
         if (charIndex < textToType.length) {
           displayedBlocks.value[blockIndex].text += textToType[charIndex] === '\n' ? '<br>' : textToType[charIndex];
           charIndex++;
-          setTimeout(typeChar, 15);
+          setTimeout(typeChar, 14);
         } else {
           blockIndex++;
-          setTimeout(showNextBlock, 600);
+          setTimeout(showNextBlock, 550);
         }
       };
       
@@ -60,5 +60,8 @@ onMounted(() => {
   color: var(--warning-color);
   font-weight: bold;
   margin-right: 12px;
+}
+@media (max-width: 700px) {
+  .narrative-block { font-size: small;}
 }
 </style>

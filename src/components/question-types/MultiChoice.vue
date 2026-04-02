@@ -37,11 +37,17 @@ const selected = ref([]);
 .multi-option.selected { border-color: var(--text-color); background: var(--bg-glass-hover); }
 input[type="checkbox"] { display: none; }
 .checkbox-custom {
-  width: 20px; height: 20px; border: 2px solid var(--text-muted); border-radius: 4px;
+  width: 20px; height: 20px; min-width: 20px; max-width: 20px; border: 2px solid var(--text-muted); border-radius: 4px;
 }
 .multi-option.selected .checkbox-custom { background: var(--text-color); border-color: var(--text-color); }
 .confirm-btn {
   align-self: flex-start; background: var(--bg-solid); color: var(--text-inverse); padding: 12px 24px;
   border-radius: 4px; font-weight: bold; border: none; cursor: pointer; font-size: 1rem;
+}
+@media (max-height: 800px){
+  .multi-option {padding: 10px 20px; font-size: 15px;}
+}
+@media (max-height: 900px){
+  .confirm-btn { margin-bottom: 100px;}
 }
 </style>

@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    <!-- Fond du header mobile, visible uniquement au scroll -->
+    <div v-if="store.phase === 'quiz'" class="mobile-header-bg" :class="{ 'is-scrolled': isScrolled }"></div>
+
     <ThemeToggle />
     <VulnerabilityBar v-if="store.phase === 'quiz'" />
 
@@ -32,7 +35,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref, onUnmounted } from 'vue';
 import { useQuizStore } from './stores/quiz';
 import ThemeToggle from './components/ThemeToggle.vue';
 import VulnerabilityBar from './components/VulnerabilityBar.vue';
@@ -42,9 +45,19 @@ import ResultScreen from './components/ResultScreen.vue';
 import Mascot from './components/Mascot.vue';
 
 const store = useQuizStore();
+const isScrolled = ref(false);
+
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 10;
+};
 
 onMounted(() => {
   store.loadState();
+  window.addEventListener('scroll', handleScroll, { passive: true });
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
 });
 
 const transitionName = computed(() => {
@@ -103,6 +116,32 @@ body {
 .app-container { 
   min-height: 100vh; position: relative; 
   display: flex; flex-direction: column;
+}
+
+/* Header Background (Mobile Only) */
+.mobile-header-bg {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .mobile-header-bg {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 110px; /* Adapte la hauteur pour englober la VulnerabilityBar et les boutons top */
+    background: var(--bg-color);
+    z-index: 40; /* Juste en dessous des éléments fixes (50, 100, 1000) mais au-dessus du texte */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .mobile-header-bg.is-scrolled {
+    opacity: 0.96;
+    box-shadow: 0 4px 20px var(--shadow-color);
+  }
 }
 
 /* Animations */

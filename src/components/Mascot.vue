@@ -38,7 +38,8 @@ defineProps({
   font-weight: 600;
   font-size: 0.95rem;
   max-width: 250px;
-  box-shadow: 0 8px 24px var(--shadow-color);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35), 0 8px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
   animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   pointer-events: auto;
 }
@@ -53,7 +54,7 @@ defineProps({
   align-items: center;
   border-radius: 50%;
   border: 3px solid var(--text-color);
-  box-shadow: 0 8px 24px var(--shadow-color);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35), 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes popIn {
@@ -64,6 +65,11 @@ defineProps({
 @media (max-width: 600px) {
   .mascot-container { bottom: 15px; right: 15px; }
   .mascot-avatar { width: 50px; height: 50px; font-size: 2rem; }
-  .speech-bubble { font-size: 0.85rem; padding: 10px 15px; }
+  .speech-bubble { 
+    font-size: 0.85rem; 
+    padding: 12px 16px; 
+    /* Effet d'ombre encore plus poussé sur mobile pour détacher au max du texte en fond */
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45), 0 6px 14px rgba(0, 0, 0, 0.25);
+  }
 }
 </style>

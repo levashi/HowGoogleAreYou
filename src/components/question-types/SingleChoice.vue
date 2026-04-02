@@ -24,4 +24,11 @@ defineEmits(['answer']);
   text-align: left; font-size: 1.1rem; cursor: pointer; transition: all 0.2s;
 }
 .option-btn:hover { background: var(--bg-glass-hover); transform: translateY(-2px); }
+
+@media (max-height: 800px){
+  .option-btn {padding: 10px 20px; font-size: 16px;}
+}
+@media (max-height: 900px){
+  .options-list { padding-bottom: 50px;}
+}
 </style>

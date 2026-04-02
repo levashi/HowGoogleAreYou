@@ -63,7 +63,11 @@ const applyTheme = () => {
   height: 24px;
 }
 @media (max-width: 600px) {
-  .theme-toggle { top: 10px; right: 15px; width: 40px; height: 40px; }
+  .theme-toggle { top: 20px; right: 15px; width: 40px; height: 40px; }
   .icon { width: 20px; height: 20px; }
+}
+
+@media (max-width: 1000px) and (min-width: 600px) {
+  .theme-toggle { top: 60px}
 }
 </style>

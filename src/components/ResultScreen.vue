@@ -164,4 +164,9 @@ const exportCard = async () => {
 .reset-btn:hover { background: var(--bg-glass); }
 
 @keyframes fadeIn { to { opacity: 1; } }
+
+@media (max-width: 700px) {
+  .advice-card h4 { font-size: 1.0rem }
+  .advice-card p { font-size: 0.8rem }
+}
 </style>

@@ -63,13 +63,19 @@ const getComponentForType = (type) => {
 .back-btn:hover { color: var(--text-color); }
 .back-icon { width: 30px; height: 30px; }
 
-@media (min-width: 800px) {
-  .back-btn { top: 80px; left: 0px; }
-}
-
 .question-text { 
   font-size: clamp(1.4rem, 5vw, 2.2rem); 
   font-weight: 600; line-height: 1.35; margin-bottom: 40px; color: var(--text-color); 
 }
-.input-area { width: 100%; max-width: 600px; }
+.input-area { width: 100%; max-width: 600px}
+
+@media (min-width: 800px) {
+  .back-btn { top: 80px; left: 0px; }
+}
+@media (max-width: 600px) {
+  .back-btn { position: fixed; top: 15px}
+}
+@media (max-height: 800px) {
+  .question-text { font-size: 17px }
+}
 </style>
